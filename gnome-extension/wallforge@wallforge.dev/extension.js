@@ -486,7 +486,9 @@ export default class WallForgeExtension {
         // Use the stacked window list — cheaper than full tab list
         const dominated = global.display.get_tab_list(Meta.TabList.NORMAL, null);
         for (const win of dominated) {
-            if (win.minimized) continue;
+            // Skip windows not actually visible on this workspace
+            // (minimized, or hidden via Super+D "show desktop", etc.)
+            if (win.minimized || !win.showing_on_its_workspace()) continue;
             // Skip the WallForge engine window (it's minimized/hidden but may still appear)
             if (this._sourceWindow && win === this._sourceWindow) continue;
             const rect = win.get_frame_rect();
